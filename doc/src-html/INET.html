@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>import java.io.*;<a name="line.1"></a>
+<span class="sourceLineNo">002</span>import java.net.MalformedURLException;<a name="line.2"></a>
+<span class="sourceLineNo">003</span>import java.net.URL;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.net.URLConnection;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.util.ArrayList;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.util.Scanner;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.util.regex.Matcher;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import java.util.regex.Pattern;<a name="line.8"></a>
+<span class="sourceLineNo">009</span><a name="line.9"></a>
+<span class="sourceLineNo">010</span>/**<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * @author Michael P. Troester<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * @version 1.01 - 11/1/2015<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * @studentid 5061001<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * @email michaelp.troester@gmail.com<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * @assignment.number A19010<a name="line.15"></a>
+<span class="sourceLineNo">016</span> * @screenprint &lt;a href='A19010.gif'&gt;ScreenPrint&lt;/a&gt;<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * @sampleoutput &lt;a href='../data/commands.txt'&gt;Sample Output&lt;/a&gt;<a name="line.17"></a>
+<span class="sourceLineNo">018</span> * @prgm.usage Called directly from OS<a name="line.18"></a>
+<span class="sourceLineNo">019</span> * @see &lt;a href='https://sites.google.com/site/jc2015sp190/course-overview/module-10/module-10-assignment' target='_blank'&gt;Program Specification&lt;/a&gt;<a name="line.19"></a>
+<span class="sourceLineNo">020</span> * @see &lt;br&gt;&lt;a href='http://docs.oracle.com/javase/8/docs/technotes/guides/Javadoc/index.html' target='_blank'&gt;Javadoc<a name="line.20"></a>
+<span class="sourceLineNo">021</span> * Documentation&lt;/a&gt;<a name="line.21"></a>
+<span class="sourceLineNo">022</span> */<a name="line.22"></a>
+<span class="sourceLineNo">023</span>public class INET implements InetTemplate {<a name="line.23"></a>
+<span class="sourceLineNo">024</span><a name="line.24"></a>
+<span class="sourceLineNo">025</span>    /**<a name="line.25"></a>
+<span class="sourceLineNo">026</span>     * The purpose of this method is to accept a full file path and name and determine if it exists on disk.<a name="line.26"></a>
+<span class="sourceLineNo">027</span>     * @param strFileName The file to check<a name="line.27"></a>
+<span class="sourceLineNo">028</span>     * @return boolExists<a name="line.28"></a>
+<span class="sourceLineNo">029</span>     */<a name="line.29"></a>
+<span class="sourceLineNo">030</span>    @Override<a name="line.30"></a>
+<span class="sourceLineNo">031</span>    public boolean fileExists(String strFileName) {<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        boolean boolExists =false;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>        File myFile = new File(strFileName);<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        if (myFile.exists()) {<a name="line.34"></a>
+<span class="sourceLineNo">035</span>            boolExists = true;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>            //System.out.println("boolExists = true");        //Testing<a name="line.36"></a>
+<span class="sourceLineNo">037</span>        }<a name="line.37"></a>
+<span class="sourceLineNo">038</span>        else {<a name="line.38"></a>
+<span class="sourceLineNo">039</span>            //System.out.println("boolExists = false");       //Testing<a name="line.39"></a>
+<span class="sourceLineNo">040</span>        }<a name="line.40"></a>
+<span class="sourceLineNo">041</span>        return boolExists;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    }<a name="line.42"></a>
+<span class="sourceLineNo">043</span><a name="line.43"></a>
+<span class="sourceLineNo">044</span>    /**<a name="line.44"></a>
+<span class="sourceLineNo">045</span>     * The purpose of this method is to accept a full file path and name as a parameter<a name="line.45"></a>
+<span class="sourceLineNo">046</span>     * and check to see if it exists using the fileExists method. Then return the file as a string.<a name="line.46"></a>
+<span class="sourceLineNo">047</span>     * @param strFileName The file to check.<a name="line.47"></a>
+<span class="sourceLineNo">048</span>     * @return strFileContents The contents of the file.<a name="line.48"></a>
+<span class="sourceLineNo">049</span>     * @throws Exception May throw IOException if there is a file access issue.<a name="line.49"></a>
+<span class="sourceLineNo">050</span>     */<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    @Override<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    public String getFromFile(String strFileName) throws Exception {<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        ArrayList&lt;String&gt; staList = new ArrayList&lt;&gt;();<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        ArrayList &lt;String&gt; staIndex = new ArrayList&lt;&gt;();<a name="line.54"></a>
+<span class="sourceLineNo">055</span><a name="line.55"></a>
+<span class="sourceLineNo">056</span>        String strFileContents = "";<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        File myFile = new File(strFileName);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        if (myFile.exists())<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        {<a name="line.59"></a>
+<span class="sourceLineNo">060</span>            // Yea! File Exists (pg 249)<a name="line.60"></a>
+<span class="sourceLineNo">061</span>            Scanner inputFile = new Scanner(myFile);<a name="line.61"></a>
+<span class="sourceLineNo">062</span>            // Initialize a Counter<a name="line.62"></a>
+<span class="sourceLineNo">063</span>            int intCount = 0;<a name="line.63"></a>
+<span class="sourceLineNo">064</span>            while (inputFile.hasNext())<a name="line.64"></a>
+<span class="sourceLineNo">065</span>            {<a name="line.65"></a>
+<span class="sourceLineNo">066</span>                String strRecord = inputFile.nextLine();<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>                //System.out.println(strRecord);              //testing<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>                //if (intCount &gt; 7) {<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                    //write station weather to ArrayList<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                    staList.add(strRecord);<a name="line.72"></a>
+<span class="sourceLineNo">073</span><a name="line.73"></a>
+<span class="sourceLineNo">074</span>                    //write StationID to Index Arraylist<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                    staIndex.add(strRecord.substring(7, 11));<a name="line.75"></a>
+<span class="sourceLineNo">076</span><a name="line.76"></a>
+<span class="sourceLineNo">077</span>                //}<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                //System.out.println(staList.get(intCount));      //testing<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                //System.out.println(staIndex.get(intCount));     //testing<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                intCount++;<a name="line.80"></a>
+<span class="sourceLineNo">081</span>            }<a name="line.81"></a>
+<span class="sourceLineNo">082</span>            inputFile.close();<a name="line.82"></a>
+<span class="sourceLineNo">083</span>            //System.out.println(staList.toString());         //testing<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        }<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        strFileContents = staList.toString();<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        return strFileContents;<a name="line.86"></a>
+<span class="sourceLineNo">087</span>    }<a name="line.87"></a>
+<span class="sourceLineNo">088</span><a name="line.88"></a>
+<span class="sourceLineNo">089</span>    /**<a name="line.89"></a>
+<span class="sourceLineNo">090</span>     * The purpose of this method is to accept an HTML web page as a string and extract<a name="line.90"></a>
+<span class="sourceLineNo">091</span>     * the data that is between the PRE tags using the getRegEx function.<a name="line.91"></a>
+<span class="sourceLineNo">092</span>     * @param strPage The raw page output<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     * @return all data between PRE tags<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     */<a name="line.94"></a>
+<span class="sourceLineNo">095</span>    @Override<a name="line.95"></a>
+<span class="sourceLineNo">096</span>    public String getPREData(String strPage) {<a name="line.96"></a>
+<span class="sourceLineNo">097</span>        return getRegEx(strPage,"&lt;PRE&gt;(.)*&lt;/PRE&gt;");<a name="line.97"></a>
+<span class="sourceLineNo">098</span>    }<a name="line.98"></a>
+<span class="sourceLineNo">099</span><a name="line.99"></a>
+<span class="sourceLineNo">100</span>    /**<a name="line.100"></a>
+<span class="sourceLineNo">101</span>     * The purpose of this method is to extract a small string from a larger one using a<a name="line.101"></a>
+<span class="sourceLineNo">102</span>     * Regular Expression and the pattern specified as a parameter.<a name="line.102"></a>
+<span class="sourceLineNo">103</span>     * @param strInput The string to be searched<a name="line.103"></a>
+<span class="sourceLineNo">104</span>     * @param strPattern The pattern to match<a name="line.104"></a>
+<span class="sourceLineNo">105</span>     * @return The matching string<a name="line.105"></a>
+<span class="sourceLineNo">106</span>     */<a name="line.106"></a>
+<span class="sourceLineNo">107</span>    @Override<a name="line.107"></a>
+<span class="sourceLineNo">108</span>    public String getRegEx(String strInput, String strPattern) {<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        String strRet = "";<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        Pattern pattern = Pattern.compile(strPattern,<a name="line.110"></a>
+<span class="sourceLineNo">111</span>                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        Matcher matcher = pattern.matcher(strInput);<a name="line.112"></a>
+<span class="sourceLineNo">113</span><a name="line.113"></a>
+<span class="sourceLineNo">114</span>        while (matcher.find())<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        {<a name="line.115"></a>
+<span class="sourceLineNo">116</span>            strRet = strRet + "\r\n" + matcher.group();<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        }<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        if (strRet.length() &lt; 1 )<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        {<a name="line.119"></a>
+<span class="sourceLineNo">120</span>            strRet = "String Not Found";<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        }<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        return strRet.trim();<a name="line.122"></a>
+<span class="sourceLineNo">123</span>    }<a name="line.123"></a>
+<span class="sourceLineNo">124</span><a name="line.124"></a>
+<span class="sourceLineNo">125</span>    /**<a name="line.125"></a>
+<span class="sourceLineNo">126</span>     * The purpose of this method is to accept a string URL, create a string using the StringBuilder<a name="line.126"></a>
+<span class="sourceLineNo">127</span>     * class and return it as one long string.<a name="line.127"></a>
+<span class="sourceLineNo">128</span>     * @param strURL The URL to read.<a name="line.128"></a>
+<span class="sourceLineNo">129</span>     * @return The raw data read from the URL<a name="line.129"></a>
+<span class="sourceLineNo">130</span>     * @throws Exception May throw IOException or MalformedURLException.<a name="line.130"></a>
+<span class="sourceLineNo">131</span>     */<a name="line.131"></a>
+<span class="sourceLineNo">132</span>    @Override<a name="line.132"></a>
+<span class="sourceLineNo">133</span>    public String getURLRaw(String strURL) throws Exception {<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        StringBuilder stbContent = new StringBuilder("");<a name="line.134"></a>
+<span class="sourceLineNo">135</span>        try<a name="line.135"></a>
+<span class="sourceLineNo">136</span>        {<a name="line.136"></a>
+<span class="sourceLineNo">137</span>            URL myWebAddress= new URL(strURL);<a name="line.137"></a>
+<span class="sourceLineNo">138</span>            URLConnection myConn = myWebAddress.openConnection();<a name="line.138"></a>
+<span class="sourceLineNo">139</span>            myConn.setConnectTimeout(0); // to prevent timeout errors<a name="line.139"></a>
+<span class="sourceLineNo">140</span>            InputStream myStrIn = myConn.getInputStream();<a name="line.140"></a>
+<span class="sourceLineNo">141</span>            BufferedReader inputFile = new<a name="line.141"></a>
+<span class="sourceLineNo">142</span>                    BufferedReader(new InputStreamReader(myStrIn));<a name="line.142"></a>
+<span class="sourceLineNo">143</span>            while(inputFile.ready())<a name="line.143"></a>
+<span class="sourceLineNo">144</span>            {<a name="line.144"></a>
+<span class="sourceLineNo">145</span>                // read a line and append it to strContent<a name="line.145"></a>
+<span class="sourceLineNo">146</span>                String strRecord = inputFile.readLine() + "\r\n";<a name="line.146"></a>
+<span class="sourceLineNo">147</span>                stbContent.append(strRecord);<a name="line.147"></a>
+<span class="sourceLineNo">148</span>            }<a name="line.148"></a>
+<span class="sourceLineNo">149</span>        }<a name="line.149"></a>
+<span class="sourceLineNo">150</span>        catch (MalformedURLException errnum)<a name="line.150"></a>
+<span class="sourceLineNo">151</span>        {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>            // display error if URL is messed up<a name="line.152"></a>
+<span class="sourceLineNo">153</span>            System.out.println(errnum.getMessage());<a name="line.153"></a>
+<span class="sourceLineNo">154</span>        }<a name="line.154"></a>
+<span class="sourceLineNo">155</span>        catch (IOException errnum)<a name="line.155"></a>
+<span class="sourceLineNo">156</span>        {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>            // display error if Internet connection is flaky<a name="line.157"></a>
+<span class="sourceLineNo">158</span>            System.out.println(errnum.getMessage());<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        }<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        // At this point strContent contains the<a name="line.160"></a>
+<span class="sourceLineNo">161</span>        //    raw HTML code of your web page<a name="line.161"></a>
+<span class="sourceLineNo">162</span>        //    or just a blank<a name="line.162"></a>
+<span class="sourceLineNo">163</span>        return stbContent.toString();  // return string builder as a string<a name="line.163"></a>
+<span class="sourceLineNo">164</span>    }<a name="line.164"></a>
+<span class="sourceLineNo">165</span><a name="line.165"></a>
+<span class="sourceLineNo">166</span>    /**<a name="line.166"></a>
+<span class="sourceLineNo">167</span>     * The purpose of this method is to accept a string and convert the whole string into lower case then upper case<a name="line.167"></a>
+<span class="sourceLineNo">168</span>     * only the first letter of each word.<a name="line.168"></a>
+<span class="sourceLineNo">169</span>     * @param strInput The string to be formatted.<a name="line.169"></a>
+<span class="sourceLineNo">170</span>     * @return The reformatted string.<a name="line.170"></a>
+<span class="sourceLineNo">171</span>     */<a name="line.171"></a>
+<span class="sourceLineNo">172</span>    @Override<a name="line.172"></a>
+<span class="sourceLineNo">173</span>    public String properCase(String strInput) {<a name="line.173"></a>
+<span class="sourceLineNo">174</span>        final String ACTIONABLE_DELIMITERS = " '-/"; // these cause the character following<a name="line.174"></a>
+<span class="sourceLineNo">175</span>        // to be capitalized<a name="line.175"></a>
+<span class="sourceLineNo">176</span><a name="line.176"></a>
+<span class="sourceLineNo">177</span>        StringBuilder sb = new StringBuilder();<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        boolean capNext = true;<a name="line.178"></a>
+<span class="sourceLineNo">179</span><a name="line.179"></a>
+<span class="sourceLineNo">180</span>        for (char c : strInput.toCharArray()) {<a name="line.180"></a>
+<span class="sourceLineNo">181</span>            c = (capNext)<a name="line.181"></a>
+<span class="sourceLineNo">182</span>                    ? Character.toUpperCase(c)<a name="line.182"></a>
+<span class="sourceLineNo">183</span>                    : Character.toLowerCase(c);<a name="line.183"></a>
+<span class="sourceLineNo">184</span>            sb.append(c);<a name="line.184"></a>
+<span class="sourceLineNo">185</span>            capNext = (ACTIONABLE_DELIMITERS.indexOf((int) c) &gt;= 0); // explicit cast not needed<a name="line.185"></a>
+<span class="sourceLineNo">186</span>        }<a name="line.186"></a>
+<span class="sourceLineNo">187</span>        return sb.toString();<a name="line.187"></a>
+<span class="sourceLineNo">188</span>    }<a name="line.188"></a>
+<span class="sourceLineNo">189</span><a name="line.189"></a>
+<span class="sourceLineNo">190</span>    /**<a name="line.190"></a>
+<span class="sourceLineNo">191</span>     * The purpose of this method is to accept a string and save it to a local file.<a name="line.191"></a>
+<span class="sourceLineNo">192</span>     * @param strFileName The file name to output to.<a name="line.192"></a>
+<span class="sourceLineNo">193</span>     * @param strContent The content of the file to write.<a name="line.193"></a>
+<span class="sourceLineNo">194</span>     * @throws Exception May throw IOException on file access error.<a name="line.194"></a>
+<span class="sourceLineNo">195</span>     */<a name="line.195"></a>
+<span class="sourceLineNo">196</span>    @Override<a name="line.196"></a>
+<span class="sourceLineNo">197</span>    public void saveToFile(String strFileName, String strContent) throws Exception {<a name="line.197"></a>
+<span class="sourceLineNo">198</span>        try (PrintWriter outputFile = new PrintWriter(new BufferedWriter(new FileWriter(strFileName, false)))) {<a name="line.198"></a>
+<span class="sourceLineNo">199</span>            outputFile.println(strContent);<a name="line.199"></a>
+<span class="sourceLineNo">200</span>            outputFile.close();<a name="line.200"></a>
+<span class="sourceLineNo">201</span>        } catch (IOException e) {<a name="line.201"></a>
+<span class="sourceLineNo">202</span>            System.out.println("Error IOException" + e.getMessage());<a name="line.202"></a>
+<span class="sourceLineNo">203</span>        }<a name="line.203"></a>
+<span class="sourceLineNo">204</span>    }<a name="line.204"></a>
+<span class="sourceLineNo">205</span><a name="line.205"></a>
+<span class="sourceLineNo">206</span>    /**<a name="line.206"></a>
+<span class="sourceLineNo">207</span>     * The purpose of this method is to accept a filename and append the contents to the file.  The saveToFile method<a name="line.207"></a>
+<span class="sourceLineNo">208</span>     * in thisvclass erases the file before creating a new one so this one features the append parameter as explained<a name="line.208"></a>
+<span class="sourceLineNo">209</span>     * in chapter four around page 240.<a name="line.209"></a>
+<span class="sourceLineNo">210</span>     * @param strFileName The name of the file to append to.<a name="line.210"></a>
+<span class="sourceLineNo">211</span>     * @param strContent The content to append.<a name="line.211"></a>
+<span class="sourceLineNo">212</span>     * @throws Exception In case there are any file errors.<a name="line.212"></a>
+<span class="sourceLineNo">213</span>     */<a name="line.213"></a>
+<span class="sourceLineNo">214</span>    public void appendToFile(String strFileName, String strContent) throws Exception {<a name="line.214"></a>
+<span class="sourceLineNo">215</span>        //code goes here :-)<a name="line.215"></a>
+<span class="sourceLineNo">216</span>        try (PrintWriter outputFile = new PrintWriter(new BufferedWriter(new FileWriter(strFileName, true)))) {<a name="line.216"></a>
+<span class="sourceLineNo">217</span>            outputFile.println(strContent);<a name="line.217"></a>
+<span class="sourceLineNo">218</span>            outputFile.close();<a name="line.218"></a>
+<span class="sourceLineNo">219</span>        } catch (IOException e) {<a name="line.219"></a>
+<span class="sourceLineNo">220</span>            System.out.println("Error IOException" + e.getMessage());<a name="line.220"></a>
+<span class="sourceLineNo">221</span>        }<a name="line.221"></a>
+<span class="sourceLineNo">222</span>    }<a name="line.222"></a>
+<span class="sourceLineNo">223</span>}<a name="line.223"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

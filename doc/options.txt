@@ -1,0 +1,18 @@
+-author
+-tag studentid
+-tag email
+-tag assignment.number
+-version
+-tag prgm.usage
+-tag screenprint
+-tag sampleoutput
+-notree
+-noindex
+-nohelp
+-nodeprecatedlist
+-linksource
+-doctitle 'CISC 190 Documentation'
+-windowtitle 'Module 08 Text Processing'
+-header 'Program by<br>Michael Troester<br>CISC190 Java'
+-footer 'Fall 2015 - CISC 190<br>Miramar College<br>10440 Black Mtn Road<br>San Diego, CA 92126'
+-bottom '(c) 2015 Michael Troester, Email: <a href="mailto:michaelp.troester@gmail.com">michaelp.troester@gmail.com</a>'
